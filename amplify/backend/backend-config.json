@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "devicetrackingc59d3d68": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
