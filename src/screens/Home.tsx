@@ -1,61 +1,58 @@
-import React from 'react';
-import { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { Auth } from '@aws-amplify/auth';
-
+import React from "react";
+import { useState } from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
+import { Auth } from "@aws-amplify/auth";
 
 export default function Home({ updateAuthState }) {
-	const [devices, setDevices] = useState([]);
+  const [identityId, setIdentityId] = useState("");
+  const [identityPool, setIdentityPool] = useState("");
 
-	async function signOut() {
-		try {
-			await Auth.signOut();
-			updateAuthState('loggedOut');
-		} catch (error) {
-			console.log('Error signing out: ', error);
-		}
-	}
+  async function signOut() {
+    try {
+      await Auth.signOut();
+      updateAuthState("loggedOut");
+    } catch (error) {
+      console.log("Error signing out: ", error);
+    }
+  }
 
-	async function forgetDevice() {
-		try {
-			await Auth.forgetDevice().then(res => {
-				console.log(res);
-			});
-		} catch (error) {
-			console.log('Forgetting Device failed with error: ', error);
-		}
-	}
+  async function showIdentityPool() {
+    const user = await Auth.currentSession();
+    setIdentityPool(user.getIdToken().payload["iss"]);
+  }
+  async function showIdentityId() {
+    const user = await Auth.currentUserInfo();
+    setIdentityId(user.id);
+  }
 
-	async function listDevices() {
-		try {
-			const devices = await Auth.fetchDevices()
-				console.log(devices);
-				setDevices(devices);
-			
-		} catch (error) {
-			console.log('Listing Device failed with error: ', error);
-		}
-	}
+  function clear() {
+    setIdentityId("");
+    setIdentityPool("");
+  }
 
-	return (
-		<View style={styles.container}>
-			<Text> Device Tracking Demo</Text>
-			<Button title="forget device" color="tomato" onPress={forgetDevice} />
-			<Button title="list devices" color="tomato" onPress={listDevices} />
-			<Button title="Sign Out" color="tomato" onPress={signOut} />
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Identity ID Demo</Text>
+      <Text>Identity pool: {identityPool}</Text>
+      <Text>Identity Id: {identityId}</Text>
+      <Button onPress={showIdentityId} title="Show Identity Id" />
+      <Button onPress={showIdentityPool} title="Show Identity Pool" />
+      <Button color="tomato" onPress={clear} title="Clear Data" />
 
-			{devices.map(device => (
-				<View>
-					<Text>{device.id}</Text>
-				</View>
-			))}
-		</View>
-	);
+      <Button title="Sign Out" color="tomato" onPress={signOut} />
+    </View>
+  );
 }
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: 'center',
-		marginTop: 20,
-	},
+  container: {
+    flex: 1,
+    alignItems: "center",
+    marginTop: 20,
+    padding: 5,
+    textAlign: "justify",
+  },
+  title: {
+    fontSize: 20,
+    marginBottom: 10,
+  },
 });

@@ -4,9 +4,11 @@ import { Auth } from '@aws-amplify/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AppTextInput from '../components/AppTextInput';
 import AppButton from '../components/Button';
+
 export default function ConfirmSignUp({ navigation }) {
 	const [username, setUsername] = useState('');
 	const [authCode, setAuthCode] = useState('');
+	
 	async function confirmSignUp() {
 		try {
 			await Auth.confirmSignUp(username, authCode);

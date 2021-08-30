@@ -12,7 +12,7 @@ export default function SignUp({ navigation }) {
   async function signUp() {
     try {
       await Auth.signUp({ username, password, attributes: { email } });
-      console.log("✅ Sign-up Confirmed");
+      console.log("✅ SignUp Confirmed");
       navigation.navigate("ConfirmSignUp");
     } catch (error) {
       console.log("❌ Error signing up...", error);
